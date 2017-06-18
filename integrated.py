@@ -20,10 +20,11 @@ NUM_IMAGES = 3;
 CAMERA_CONNECTED = False #Dont touch this
 
 #Others
-SAMPLING_FREQ = 0.1 #per second
+SAMPLING_FREQ = 0.5 #per second
 SAMPLING_TIME = -1 #seconds, set to -1 if run infinitely
 MATH_NAN = float('nan')
 
+RADIO_EXEC_LOC = "RadioHead-master/examples/raspi/rf95/rf95_client"
 
 #-----------------IMPORTING LIBRARIES-----------------#
 from ADXL345 import ADXL345
@@ -35,10 +36,13 @@ from gps3.agps3threaded import AGPS3mechanism
 
 import smbus
 import time
-import math
+import os
+from datetime import datetime
+#import math
 #import csv
 
 #--------------------DATA PACKAGE--------------------#
+
 
 class DataPackage(object):
     
@@ -53,7 +57,7 @@ class DataPackage(object):
         self.coordinates = [MATH_NAN, MATH_NAN]
         self.speed = MATH_NAN
         self.course = MATH_NAN
-        self.time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
+        self.time = datetime.now()
         self.gpstime = MATH_NAN
         self.gpsHeight = MATH_NAN
 
@@ -95,8 +99,8 @@ class DataPackage(object):
 
     #For testing only
     def printData(self):
-        print('---------------------------')
-        print(self.time +'\n')
+        print('---------------------------')        
+        print(time.strftime('%Y-%m-%d %H:%M:%S', self.time.timetuple()) +'\n')
         print('Height: ' + str(self.pressure) + ' m')
         print('Temperature: ' + str(self.temperature) + ' F')
         print('Acceleration: ' + str(tuple(self.attitude)))
@@ -120,8 +124,14 @@ temp.begin()
 
 gyro = L3GD20H()
 
-currentTimeStr = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
+startingTime = datetime.now()
+currentTimeStr = startingTime.strftime('%Y-%m-%d %H:%M:%S')
+
 outputTxtName = currentTimeStr + '-output.txt'
+
+dir = os.path.dirname(__file__)
+RADIO_EXEC_LOC = dir + "/" + RADIO_EXEC_LOC
+outputTxtName = dir + "/Data/" + outputTxtName
 
 try:
     camera = PiCamera()
@@ -141,8 +151,15 @@ while(True):
 agps_thread = AGPS3mechanism()  # Instantiate AGPS3 Mechanisms
 agps_thread.stream_data()  # From localhost (), or other hosts, by example, (host='gps.ddns.net')
 agps_thread.run_thread()  # Throttle time to sleep after an empty lookup, default '()' 0.2 two tenths of a second
-    
 
+#os.system("sudo killall gpsd")
+#os.system("sudo systemctl stop gpsd.socket")
+#os.system("sudo systemctl disable gpsd.sockett")
+#os.system("sudo gpsd /dev/ttyS0 -F /var/run/gpsd.sock")
+    
+start_audio_command = "arecord --device=hw:1,0 --format S16_LE --rate 44100 -V mono -c1 "
+start_audio_command += dir + "/audio/" + currentTimeStr + ".wav"
+#os.system(start_audio_command)
 
 #-------------------HELPER FUNCTIONS-------------------#
 
@@ -153,7 +170,7 @@ def outputSensorData(package, textfile):
     
 	outputString = ''
 
-	outputString += package.time + ','
+	outputString += package.time.strftime('%Y-%m-%d %H:%M:%S.%f') + ','
     
 	for item in package.attitude:
 		outputString += str(item) + ','
@@ -176,7 +193,35 @@ def outputSensorData(package, textfile):
 	
 	textfile.write('%s\n' % (outputString))
 	#textfile.write(str(tuple(package.attitude)) + str(tuple(package.rotation)) + str(package.pressure) + str(package.temperature))
-        
+
+def transmitData(package):
+
+    outputString = ''
+
+    outputString = package.time.strftime('%M') + ','
+    outputString += package.time.strftime('%S.%f')[:5] + ','
+
+    outputString += str(package.gpstime)[14:-8] +',' + str(package.gpstime)[17:-5] + ','
+
+    for item in package.attitude:
+        outputString += str(item) + ','
+
+    for item in package.rotation:
+        outputString += str(item) + ','
+
+    outputString += str(package.pressure) + ','
+	
+    outputString += str(package.temperature) +','
+
+    for item in package.coordinates:
+        outputString += str(item) + ','
+
+    outputString += str(package.gpsHeight) + ','	
+    outputString += str(package.speed) + ','
+    outputString += str(package.course)
+
+    #textfile.write('%s\n' % (outputString))
+    return outputString   
 	
 def remainder(a, b):
     c = int(a/b)
@@ -223,6 +268,7 @@ def main():
     videoCount = 0
     
     timeElapsed = 0 # in milliseconds
+    tempTime = 0
 
     while(timeElapsed < SAMPLING_TIME or SAMPLING_TIME == -1):
         
@@ -230,7 +276,7 @@ def main():
         #Get Images
         try:
             if(CAMERA_CONNECTED and NUM_IMAGES > 0 and i % int((RECORD_TIME/NUM_IMAGES)) == 1):
-                #camera.capture('images/image' + str(imgCount) + '.jpg', use_video_port=True)
+                #camera.capture(dir + '/images/image' + str(imgCount) + '.jpg', use_video_port=True)
                 imgCount += 1
         except:
             pass
@@ -240,7 +286,7 @@ def main():
             if(CAMERA_CONNECTED and remainder(timeElapsed, VIDEO_INTERVAL) == 0):
                 videoCount += 1
                 #camera.stop_recording()
-                #camera.start_recording('videos/' + VIDEO_NAME + str(videoCount) + '.h264')
+                #camera.start_recording(dir + '/videos/' + VIDEO_NAME + str(videoCount) + '.h264')
                 print('video ' + str(videoCount))
         except:
             print('Camera went wrong!')
@@ -249,25 +295,18 @@ def main():
         dataPackage = getSensorsData()
         dataPackage.printData()
 
-        #text_file = open("Output.txt", "a")
-        #outputSensorData(dataPackage, text_file)
-        #text_file.write('%s, %s, %s, %s \n' % (str(tuple(dataPackage.attitude)), str(tuple(dataPackage.rotation)), dataPackage.pressure, dataPackage.temperature))
-        #sorry Edward just delete the next row and get rid of the pound above
-        #text_file.write('%s, ' % (str(tuple(dataPackage.attitude))))
-        #text_file.write('%s,\n' % (str(tuple(dataPackage.attitude))))
-        #text_file.close()
 
         with open(outputTxtName, 'a') as output:
             outputSensorData(dataPackage, output)
+
+        radioStr = transmitData(dataPackage)
+        bashCommand = "sudo ./" + RADIO_EXEC_LOC + " " + radioStr + ",KM6ISP"
+        os.system(bashCommand)
         
-        #csvfile = open('Output.csv', 'a')
-        #csvwriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-        #csvwriter.writerows([str(tuple(dataPackage.attitude)), str(tuple(dataPackage.rotation)), str(dataPackage.pressure), str(dataPackage.temperature)])
-        #csvfile.close()
         
         time.sleep(SAMPLING_FREQ)
         timeElapsed += SAMPLING_FREQ
-
+        #tempTime += SAMPLING_FREQ
     
     
     if(CAMERA_CONNECTED):
@@ -278,7 +317,7 @@ def main():
 
 try:
     main()
-except KeyboardInterrupt:
+except:
     
     if(CAMERA_CONNECTED):
         camera.stop_recording()
@@ -286,7 +325,7 @@ except KeyboardInterrupt:
         if(SHOW_PREVIEW):
             camera.stop_preview()
             
-    print("\nScript ended by keyboard interrupt")
+    print("\nAn exception occured. Exiting script.")
         
         
 
