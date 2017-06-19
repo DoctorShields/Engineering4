@@ -129,9 +129,10 @@ currentTimeStr = startingTime.strftime('%Y-%m-%d %H:%M:%S')
 
 outputTxtName = currentTimeStr + '-output.txt'
 
-dir = os.path.dirname(__file__)
+dir = os.path.dirname(os.path.realpath(__file__))
 RADIO_EXEC_LOC = dir + "/" + RADIO_EXEC_LOC
 outputTxtName = dir + "/Data/" + outputTxtName
+print(dir + "\n")
 
 try:
     camera = PiCamera()
@@ -142,7 +143,7 @@ except:
 
 while(True):
     try:
-        with open(outputTxtName, 'x+') as output:
+        with open(outputTxtName, 'a') as output:
             output.write(currentTimeStr + '\n')
             break
     except FileExistsError:
@@ -300,7 +301,7 @@ def main():
             outputSensorData(dataPackage, output)
 
         radioStr = transmitData(dataPackage)
-        bashCommand = "sudo ./" + RADIO_EXEC_LOC + " " + radioStr + ",KM6ISP"
+        bashCommand = "sudo " + RADIO_EXEC_LOC + " " + radioStr + ",KM6ISP"
         os.system(bashCommand)
         
         

@@ -17,8 +17,8 @@ class MPL3115A2(object):
         self._device = i2c.get_i2c_device(address)
 
         try:
-            #Barometer mode
-            self.bus.write_byte_data(self.Altimeter_Address, self.CTRL_REG_1, 0x39)
+            #Altimeter mode
+            self.bus.write_byte_data(self.Altimeter_Address, self.CTRL_REG_1, 0xB9)
             #Data Ready event
             self.bus.write_byte_data(self.Altimeter_Address, self.DATA_CONFIG_REG, 0x07)
         except:
@@ -40,7 +40,7 @@ class MPL3115A2(object):
 
         # (0x39 (57) Active Mode, OSR = 128, Barometer Mode)
         #self.bus.write_byte_data(self.Altimeter_Address, self.CTRL_REG_1, 0x39)
-        rdata = (0, 0);
+        rdata = (float('nan'), float('nan'));
 
         try:
             # Read data from 0x00(00), 6 bytes
@@ -48,17 +48,17 @@ class MPL3115A2(object):
             data = self.bus.read_i2c_block_data(self.Altimeter_Address, 0x00, 6)
 
             # Convert data to 20 bits (?)
-            pres = ((data[1] * 65536) + (data[2] * 256) + (data[3]&0xF0))/16
-            pressure = (pres/4.0)
+            tHeight = ((data[1] * 65536) + (data[2] * 256) + (data[3]&0xF0))/16
+            altitude = (tHeight/16.0)
 
             temp = ((data[4] * 256) + (data[5] & 0xF0)) /16 
             cTemp = temp / 16
             fTemp = cTemp * 1.8 + 32
 
             if(celsius):
-                rdata = (pressure, cTemp)
+                rdata = (altitude, cTemp)
             else:
-                rdata = (pressure, fTemp)
+                rdata = (altitude, fTemp)
         
         except:
             #print('Unable to get ALT data')

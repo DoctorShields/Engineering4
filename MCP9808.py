@@ -86,7 +86,7 @@ class MCP9808(object):
 		try:
 			t = self._device.readU16BE(MCP9808_REG_AMBIENT_TEMP)
 		except:
-                        return 0
+                        return float('nan')
 			
 		self._logger.debug('Raw ambient temp register value: 0x{0:04X}'.format(t & 0xFFFF))
 		# Scale and convert to signed value.

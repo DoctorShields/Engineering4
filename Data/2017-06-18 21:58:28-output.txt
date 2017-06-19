@@ -1,0 +1,16 @@
+2017-06-18 21:58:28
+2017-06-18 21:58:28.472855,nan,nan,nan,nan,nan,nan,nan,nan,n/a,n/a,n/a,n/a,n/a,n/a
+2017-06-18 21:58:29.012914,nan,nan,nan,nan,nan,nan,nan,nan,n/a,n/a,n/a,n/a,n/a,n/a
+2017-06-18 21:58:29.538378,nan,nan,nan,nan,nan,nan,nan,nan,n/a,n/a,n/a,n/a,n/a,n/a
+2017-06-18 21:58:30.084834,nan,nan,nan,nan,nan,nan,nan,nan,n/a,n/a,n/a,n/a,n/a,n/a
+2017-06-18 21:58:30.630558,nan,nan,nan,nan,nan,nan,nan,nan,n/a,n/a,n/a,n/a,n/a,n/a
+2017-06-18 21:58:31.175946,nan,nan,nan,nan,nan,nan,nan,nan,n/a,n/a,n/a,n/a,n/a,n/a
+2017-06-18 21:58:31.724305,nan,nan,nan,nan,nan,nan,nan,nan,n/a,n/a,n/a,n/a,n/a,n/a
+2017-06-18 21:58:32.258261,nan,nan,nan,nan,nan,nan,nan,nan,n/a,n/a,n/a,n/a,n/a,n/a
+2017-06-18 21:58:32.804932,nan,nan,nan,nan,nan,nan,nan,nan,n/a,n/a,n/a,n/a,n/a,n/a
+2017-06-18 21:58:33.351029,nan,nan,nan,nan,nan,nan,nan,nan,n/a,n/a,n/a,n/a,n/a,n/a
+2017-06-18 21:58:33.909512,nan,nan,nan,nan,nan,nan,nan,nan,n/a,n/a,n/a,n/a,n/a,n/a
+2017-06-18 21:58:34.455366,nan,nan,nan,nan,nan,nan,nan,nan,n/a,n/a,n/a,n/a,n/a,n/a
+2017-06-18 21:58:35.002020,nan,nan,nan,nan,nan,nan,nan,nan,n/a,n/a,n/a,n/a,n/a,n/a
+2017-06-18 21:58:35.549409,nan,nan,nan,nan,nan,nan,nan,nan,n/a,n/a,n/a,n/a,n/a,n/a
+2017-06-18 21:58:36.095826,nan,nan,nan,nan,nan,nan,nan,nan,n/a,n/a,n/a,n/a,n/a,n/a

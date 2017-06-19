@@ -41,7 +41,8 @@ class L3GD20H(object):
             gyroz = twos_comp_combine(self.bus.read_byte_data(self.address, LGD_GYRO_Z_MSB), self.bus.read_byte_data(self.address, LGD_GYRO_Z_LSB))
             return (gyrox, gyroy, gyroz)
         except:
-            return (0,0,0)
+            MATH_NAN = float('nan')
+            return (MATH_NAN,MATH_NAN,MATH_NAN)
 
         
         

@@ -1,0 +1,7 @@
+2017-06-18 22:00:34
+2017-06-18 22:00:34.787043,nan,nan,nan,nan,nan,nan,nan,nan,n/a,n/a,n/a,n/a,n/a,n/a
+2017-06-18 22:00:35.345104,nan,nan,nan,nan,nan,nan,nan,nan,n/a,n/a,n/a,n/a,n/a,n/a
+2017-06-18 22:00:35.903404,nan,nan,nan,nan,nan,nan,nan,nan,n/a,n/a,n/a,n/a,n/a,n/a
+2017-06-18 22:00:36.505400,nan,nan,nan,nan,nan,nan,nan,nan,n/a,n/a,n/a,n/a,n/a,n/a
+2017-06-18 22:00:37.063690,nan,nan,nan,nan,nan,nan,nan,nan,n/a,n/a,n/a,n/a,n/a,n/a
+2017-06-18 22:00:37.663323,nan,nan,nan,nan,nan,nan,nan,nan,n/a,n/a,n/a,n/a,n/a,n/a
