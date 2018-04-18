@@ -1,4 +1,4 @@
-DEFAULT_ADDRESS = 0x6b #Device I2C slave address
+DEFAULT_ADDRESS = 0x6a #Device I2C slave address
 
 LGD_CTRL_1 = 0x20 #turns on gyro
 
